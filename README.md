@@ -18,6 +18,20 @@ Asisten virtual untuk **Sipakar Minang** (Sistem Pakar Waris Pusako Minangkabau)
 - 🔗 Link navigasi ke halaman aplikasi Sipakar Minang
 - 🌙 Tampilan dark mode glassmorphism
 
+## Target Pengguna
+
+Masyarakat Minangkabau dan siapa saja yang ingin memahami atau menghitung **pembagian harta waris** menurut hukum adat Minangkabau dan Faraid Islam, terutama yang masih awam dengan sistem pakar ini.
+
+## Bagaimana Mina AI Membantu
+
+| No | Fungsi | Deskripsi |
+|----|--------|-----------|
+| 1 | **Menjelaskan** | Konsep Pusako Randah, Pusako Tinggi, Certainty Factor (CF), Faraid, dan aturan waris secara sederhana |
+| 2 | **Memandu** | Langkah diagnosa dari login sampai hasil Surat Keterangan |
+| 3 | **Menerjemahkan** | Kata/frasa Minang ke Indonesia secara otomatis |
+| 4 | **Menavigasi** | Link langsung ke halaman terkait (diagnosa, dalil, about, dll) |
+| 5 | **Mendampingi** | User bisa bertanya dulu sebelum melakukan diagnosa |
+
 ## Struktur Folder
 
 ```
