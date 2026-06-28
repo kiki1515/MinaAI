@@ -1,0 +1,534 @@
+# SIPAKAR MINANG — Knowledge Base
+Sistem Pakar Pembagian Waris Pusako Minangkabau berbasis web.
+Dibangun dengan PHP 8.5 + MySQL 8.0, metode Forward Chaining & Certainty Factor (CF).
+Domain: hukum Adat Minangkabau & Faraid Islam.
+
+## 1. IDENTITAS APLIKASI
+- Nama: Sipakar Minang (Sistem Pakar Waris Pusako Minangkabau)
+- Pakar: Adv. Arisman Nur, SH (ahli hukum adat & waris)
+- Developer: Muhammad Fikri Khrisna — kikikhrisna@gmail.com
+- Tujuan: Membantu masyarakat Minangkabau menghitung & memahami pembagian harta waris berdasarkan adat dan syarak
+- URL: aplikasi berjalan di localhost (development)
+
+## 2. KONSEP UTAMA PUSAKO MINANGKABAU
+
+### 2.1 Pusako Randah (Harta Pencarian)
+- Harta yang diperoleh orang tua dari hasil usaha sendiri (bukan warisan turun-temurun)
+- Bisa dibagi kepada ahli waris sesuai hukum Faraid Islam
+- Kode dalil: d1—d9 (Al-Quran) dan D4—D12 (KHI Pasal 171-214)
+- Setelah pewaris meninggal, harta ini jatuh ke anak & keluarga inti
+- Tanah, rumah, kebun, tabungan, kendaraan hasil usaha pribadi
+
+### 2.2 Pusako Tinggi (Harta Pusaka Kaum)
+- Harta warisan turun-temurun dari nenek moyang dalam satu kaum/suku
+- Tidak boleh dibagi perorangan — milik kaum secara kolektif
+- Contoh: Rumah Gadang, sawah pusaka, tanah ulayat, pandam pakuburan
+- Diwariskan menurut garis ibu (matrilineal) — dari mamak ke kemenakan
+- Dikelola oleh Mamak Kepala Waris (MKW) atas nama kaum
+- Kode dalil: dt1—dtN (KHI terkait harta pusaka tinggi)
+- Hanya bisa digadai dalam 4 kondisi darurat (lihat S2)
+- Tidak bisa dijual — "gadih gadang indak balaki"
+
+### 2.3 Perbedaan Ringkas
+| Aspek | Pusako Randah | Pusako Tinggi |
+|-------|---------------|---------------|
+| Asal | Hasil usaha orang tua | Warisan turun-temurun kaum |
+| Pembagian | Bisa dibagi perorangan | Tidak bisa dibagi |
+| Garis | Faraid Islam | Matrilineal (garis ibu) |
+| Pengelola | Ahli waris individu | Mamak Kepala Waris (MKW) |
+| Contoh | Rumah pribadi, tabungan | Rumah Gadang, sawah kaum |
+
+## 3. ALUR DIAGNOSA — STEP BY STEP
+
+### Langkah 1: Login / Register
+- Wajib login sebelum mengakses diagnosa (`/?p=diagnosa`)
+- Register: isi username, email, password, nama lengkap, jenis kelamin, no HP
+- Upload foto profil (opsional, max 5MB, jpg/png/gif)
+
+### Langkah 2: Isi Data Pewaris & Harta
+- Jenis kelamin pewaris: Alm. (laki-laki) atau Almh. (perempuan)
+- Nama Pewaris (yang meninggal)
+- Nama Ahli Waris (pemohon yang mengajukan)
+- Alamat Pewaris
+- Nama Harta (contoh: Rumah Tinggal, Sawah, Kebun)
+- Luas Tanah (dalam m²)
+- Besaran Harta (nilai total dalam Rupiah — ada fitur "terbilang" otomatis)
+- Hutang Waris (hutang yang ditinggalkan pewaris)
+- Biaya Penyelenggaraan Jenazah (tajhiz, dikurangi dari total harta)
+- Harta Bersih = Besaran Harta - Hutang - Biaya Jenazah
+
+### Langkah 3: Pilih Kondisi / Penyebab (P1—P10)
+- Minimal 1 penyebab harus dipilih
+- Setiap penyebab berbentuk pertanyaan 5W+1H dengan checkbox
+- Jika dicentang, tampil slider CF keyakinan user: 0% / 20% / 40% / 60% / 80% / 100%
+- Default CF user = 100% (Sangat Yakin) jika tidak digeser
+- Daftar 10 penyebab:
+
+**P1** — "Apakah harta berasal dari orang tua atau pencariannya sendiri selama hidup?"
+**P2** — "Apakah harta berupa harta pusaka turun temurun dari nenek moyang?"
+**P3** — "Apakah harta pusaka tinggi berupa Rumah Gadang, sawah, ladang, tanah ulayat, atau pandam pakuburan?"
+**P4** — "Apakah harta pusaka tinggi diwariskan menurut garis ibu (matrilineal)?"
+**P5** — "Apakah harta pusaka tinggi dikelola oleh Mamak Kepala Waris (MKW)?"
+**P6** — Kondisi "maik tabujua di ateh rumah" (mayat terbujur di rumah — kondisi darurat 1)
+**P7** — Kondisi "gadih gadang indak balaki" (gadis dewasa belum bersuami — kondisi darurat 2)
+**P8** — Kondisi "rumah gadang katirisan" (Rumah Gadang bocor/rusak — kondisi darurat 3)
+**P9** — Kondisi "mambangkik batang tarandam" (mengangkat martabat yang terendam — kondisi darurat 4)
+**P10** — "Apakah sudah mendapat persetujuan seluruh anggota kaum dan Mamak Kepala Waris?"
+
+### Langkah 4: Input Jumlah Ahli Waris (F1—F23)
+- Hanya tampil jika P1 (Pusako Randah) dicentang
+- Untuk setiap jenis ahli waris: isi jumlah orang (0-9) via picker
+- 23 jenis ahli waris (F1—F23):
+DAFTAR AHLI WARIS (F1 - F23)
+========================================
+
+F1	Suami
+F2	Istri
+F3	Anak Laki-laki
+F4	Anak Perempuan
+F5	Cucu Laki-laki
+F6	Cucu Perempuan
+F7	Ayah
+F8	Ibu
+F9	Kakek
+F10	Nenek dari Ayah
+F11	Nenek dari Ibu
+F12	Saudara Laki-laki sekandung
+F13	Saudara Perempuan sekandung
+F14	Saudara Laki-laki Seayah
+F15	Saudara Perempuan Seayah
+F16	Anak Laki-laki Saudara Sekandung
+F17	Anak Laki-laki Saudara Seayah
+F18	Paman Sekandung
+F19	Paman Seayah
+F20	Anak Laki-laki Paman Sekandung
+F21	Anak Laki-laki Paman Seayah
+F22	Saudara Laki-laki seibu
+F23	Saudara Perempuan seibu
+
+Total: 23 ahli waris
+
+
+
+### Langkah 5: Sistem Memproses (Forward Chaining + CF)
+- Tombol "PROSES DIAGNOSA" — sistem menjalankan:
+  1. Hitung CF kombinasi tiap fakta (CF_user × CF_pakar)
+  2. Jalankan forward chaining — cocokkan semua rule IF-THEN
+  3. Evaluasi premis rule (AND/OR/parenthes/heir conditions)
+  4. Propagasi CF ke kesimpulan
+  5. Tentukan solusi akhir (S1/S2/S3)
+  6. Jika S3: hitung rincian pembagian per ahli waris
+
+### Langkah 6: Hasil Diagnosa
+- Ditampilkan sebagai Surat Keterangan resmi (format cetak)
+- Disimpan otomatis ke riwayat diagnosa user
+- Bisa dicetak (tombol CETAK SURAT) atau diagnosa ulang
+
+## 4. KODE-KODE SISTEM (LENGKAP)
+
+### 4.1 Kode Penyebab — P1 s/d P10
+Gejala/kondisi awal yang dipilih user sebagai fakta masukan.
+
+### 4.2 Kode Waris — W1, W2
+- **W1** = Pusaka Rendah (harta pencarian, bisa dibagi)
+- **W2** = Pusaka Tinggi (harta pusaka kaum, tidak bisa dibagi)
+
+### 4.3 Kode Solusi — S1, S2, S3
+- **S1** = Pusaka Tinggi — **Tidak boleh dibagi** secara perorangan, tidak bisa digadai atau dijual. Harta tetap menjadi milik kaum, dikelola Mamak Kepala Waris.
+- **S2** = Pusaka Tinggi — **Bisa digadai** atas dasar 4 kondisi darurat (P6-P9 terpenuhi) dan disetujui seluruh anggota kaum + MKW. Tidak bisa dijual, hanya gadai.
+- **S3** = Pusaka Rendah — **Boleh dibagi** mengikuti hukum kewarisan Islam (Faraid). Sistem akan merinci bagian setiap ahli waris.
+
+### 4.4 Kode Pembagian — AW1 s/d AW23
+Hasil pembagian spesifik untuk setiap jenis ahli waris dalam berbagai kondisi:
+
+| Kode | Ahli Waris | Kondisi & Bagian |
+|------|-----------|------------------|
+| AW1 | Suami | Tidak ada anak: 1/2, Ada anak: 1/4 |
+| AW2 | Istri | Tidak ada anak: 1/4, Ada anak: 1/8 |
+| AW3 | Anak Laki-laki | Ashabah (sisa, 2:1 dengan anak pr) |
+| AW4 | Anak Perempuan | 1 org: 1/2, 2+ org: 2/3 (lalu sisa ke anak lk) |
+| AW5 | Cucu Laki-laki | Ashabah (jika tidak ada anak lk) |
+| AW6 | Cucu Perempuan | 1 org: 1/2, 2+ org: 2/3 |
+| AW7 | Ayah | Ada anak lk: 1/6, Tidak ada: Ashabah |
+| AW8 | Ibu | Ada anak/cucu: 1/6, Tidak ada: 1/3 |
+| AW9 | Kakek | 1/6 (jika tidak ada ayah) |
+| AW10 | Nenek dari Ayah | 1/6 |
+| AW11 | Nenek dari Ibu | 1/6 (berbagi jika keduanya ada) |
+| AW12 | Saudara Lk Sekandung | Ashabah (jika tidak ada anak/ayah) |
+| AW13 | Saudara Pr Sekandung | 1 org: 1/2, 2+ org: 2/3 |
+| AW14 | Saudara Lk Seayah | Ashabah (jika tidak ada sdra sekandung) |
+| AW15 | Saudara Pr Seayah | 1 org: 1/2, 2+ org: 2/3 |
+| AW16 | Anak Lk Sdr Sekandung | Ashabah |
+| AW17 | Anak Lk Sdr Seayah | Ashabah |
+| AW18 | Paman Sekandung | Ashabah |
+| AW19 | Paman Seayah | Ashabah |
+| AW20 | Anak Lk Paman Sekandung | Ashabah |
+| AW21 | Anak Lk Paman Seayah | Ashabah |
+| AW22 | Saudara Lk Seibu | 1/6 (perorangan) |
+| AW23 | Saudara Pr Seibu | 1/6 (perorangan) |
+
+### 4.5 Kode Ahli Waris (Input) — F1 s/d F23
+Jumlah orang untuk setiap jenis ahli waris yang diinput user.
+
+### 4.6 Kode Dalil — D1 s/d D12
+- **D1** = QS. An-Nisaa: 11 (pembagian anak, orang tua)
+- **D2** = QS. An-Nisaa: 12 (bagian suami/istri)
+- **D3** = QS. An-Nisaa: 176 (kalalah — pewaris tanpa anak & ayah)
+- **D4-D12** = KHI Pasal 171—214 (hukum waris menurut Kompilasi Hukum Islam)
+
+## 5. FORWARD CHAINING — DETAIL TEKNIS
+
+### 5.1 Struktur Rule
+Format: `IF [premis] THEN [kesimpulan]`
+Disimpan di tabel `basis_forward` dengan kode R1, R2, ..., R61B.
+Total 71 rule.
+
+### 5.2 Tahapan Rule
+**Tahap 1 — Menentukan Jenis Waris (R1-R2):**
+- IF P1 THEN W1 (ada harta pencarian → Pusaka Rendah)
+- IF P2 THEN W2 (ada harta pusaka → Pusaka Tinggi)
+
+**Tahap 2 — Menentukan Solusi Awal (R3-R4):**
+- IF W1 THEN S3 (Pusaka Rendah → bisa dibagi)
+- IF W2 THEN P3 (Pusaka Tinggi → cek jenis harta)
+
+**Tahap 3 — Rantai Pusako Tinggi (R5-R9):**
+- IF P3 THEN P4 (harta pusaka → cek garis ibu)
+- IF P4 THEN P5 (garis ibu → cek kelola MKW)
+- IF P5 THEN S1 (dikelola MKW → tidak bisa dibagi)
+- IF P5 AND P6 AND P7 AND P8 AND P9 THEN P10 (4 kondisi darurat → cek persetujuan)
+- IF P10 THEN S2 (disetujui kaum → bisa digadai)
+
+**Tahap 4 — Pembagian Faraid (R10-R61B):**
+- IF S3 AND [kondisi ahli waris] THEN [AW code]
+- Contoh: IF S3 AND F1>0 AND F3=0 AND F4=0 AND F5=0 AND F6=0 THEN AW1
+- Mendukung operator: F>0, F=0, F1+F2>0, "ADA" / "TIDAK ADA"
+- Semakin kompleks kondisi, semakin spesifik pembagian
+
+### 5.3 Evaluasi Premis
+- **AND**: ambil CF minimum dari semua kondisi
+- **OR**: ambil CF maksimum
+- **Parenthes**: evaluasi dari dalam keluar
+- **Heir conditions**: boolean — true jika kondisi terpenuhi
+- **Natural language**: "SEMUA AHLI WARIS LEBIH DEKAT TIDAK ADA" → cek apakah F1-F23 semua kosong
+- Rule hanya dieksekusi jika premis CF > 0.001
+
+### 5.4 Propagasi CF
+- CF kesimpulan = CF premis × CF pakar (dari tabel certainty_factor)
+- CF baru dikombinasikan dengan CF lama (jika sudah ada) pakai rumus kombinasi
+- Iterasi maksimal 10 siklus — berhenti jika tidak ada rule baru yang fired
+
+## 6. CERTAINTY FACTOR (CF) — RUMUS & NILAI
+
+### 6.1 Definisi
+- CF = MB - MD (Measure of Belief - Measure of Disbelief)
+- Range: -1 s/d 1 (dalam praktik: 0 s/d 1)
+- CF = 1.0 → Sangat Yakin, CF = 0.5 → Netral, CF = 0.0 → Tidak Tahu
+- Semua CF pakar di database: MB = 1.0, MD = 0 (kecuali P3: MB=1, MD=0.125, CF=0.875)
+
+### 6.2 Rumus Dasar
+CF(H,E) = CF(user) × CF(expert)
+- CF user: dipilih user per penyebab (0.0, 0.2, 0.4, 0.6, 0.8, 1.0) — default 1.0
+- CF expert: dari tabel certainty_factor
+
+### 6.3 Kombinasi CF (Multiple Evidence)
+- **CF1 & CF2 sama-sama positif (keduanya > 0):**
+  CF_kombinasi = CF_lama + CF_baru × (1 - CF_lama)
+- **CF1 & CF2 sama-sama negatif (keduanya < 0):**
+  CF_kombinasi = CF_lama + CF_baru × (1 + CF_lama)
+- **CF1 & CF2 berbeda tanda (satu positif, satu negatif):**
+  CF_kombinasi = (CF_lama + CF_baru) / (1 - min(|CF_lama|, |CF_baru|))
+
+### 6.4 Tabel CF User
+| Level | Persentase | Nilai CF |
+|-------|-----------|----------|
+| Tidak | 0% | 0.0 |
+| Tidak Yakin | 20% | 0.2 |
+| Kurang Yakin | 40% | 0.4 |
+| Cukup Yakin | 60% | 0.6 |
+| Yakin | 80% | 0.8 |
+| Sangat Yakin | 100% | 1.0 |
+
+## 7. PERHITUNGAN PEMBAGIAN HARTA (S3)
+
+### 7.1 Rumus
+- **Harta Bersih** = Besaran Harta - Hutang Waris - Biaya Penyelenggaraan Jenazah
+- **Bagian Fixed** = (Pembilang / Penyebut) × Harta Bersih
+- **Bagian Ashabah** = Harta Bersih - Total Bagian Fixed → dibagi dengan rasio lk:pr = 2:1
+- **Wasiat** maksimal 1/3 dari total harta (tidak boleh ke ahli waris)
+
+### 7.2 Format Output
+Setiap baris hasil:
+```
+Nama_Ahli_Waris (pembilang/penyebut) [N orang]: Total Rp X.XXX.XXX | Per orang: Rp X.XXX.XXX
+```
+
+### 7.3 Prioritas & Aturan
+- Solusi prioritas: S2 > S1 > S3 (jika S2 ada, itu yang dipakai)
+- Ahli waris "terhalang" (mahjub) dapat bagian 0
+- Ahli waris laki-laki dapat 2× bagian perempuan dalam ashabah
+- Jika ada anak laki-laki, cucu terhalang
+- Jika ada ayah, kakek terhalang
+- Saudara sekandung mem-blok saudara seayah
+
+## 8. RULE LENGKAP (R1—R61B)
+
+### 8.1 Identifikasi Waris & Solusi (R1—R9)
+R1: IF P1 THEN W1
+R2: IF P2 THEN W2
+R3: IF W1 THEN S3
+R4: IF W2 THEN P3
+R5: IF P3 THEN P4
+R6: IF P4 THEN P5
+R7: IF P5 THEN S1
+R8: IF P5 AND P6 AND P7 AND P8 AND P9 THEN P10
+R9: IF P10 THEN S2
+
+### 8.2 Pembagian Suami (R10—R11)
+R10: IF S3 AND F1>0 AND F3=0 AND F4=0 AND F5=0 AND F6=0 THEN AW1 (Suami 1/2)
+R11: IF S3 AND F1>0 AND (F3>0 OR F4>0) THEN AW1 (Suami 1/4)
+
+### 8.3 Pembagian Istri (R12—R13)
+R12: IF S3 AND F2>0 AND F3=0 AND F4=0 AND F5=0 AND F6=0 THEN AW2 (Istri 1/4)
+R13: IF S3 AND F2>0 AND (F3>0 OR F4>0) THEN AW2 (Istri 1/8)
+
+### 8.4 Pembagian Anak (R14—R19)
+R14-R19: Berbagai kombinasi anak lk/pr dengan ahli waris lain → AW3, AW4
+
+### 8.5 Pembagian Ayah & Ibu (R20—R30)
+R20-R30: Kombinasi ayah, ibu dengan/tanpa anak → AW7, AW8
+
+### 8.6 Pembagian Cucu (R31—R42)
+R31-R42: Cucu lk/pr dengan berbagai kondisi → AW5, AW6
+
+### 8.7 Pembagian Saudara (R43—R61B)
+R43-R61B: Saudara sekandung, seayah, seibu dalam berbagai kombinasi → AW10-AW23
+Rule lengkap dengan kondisi "terhalang" (mahjub) dan prioritas
+
+## 9. DATABASE & TABEL
+
+Database: `pusako` (MySQL 8.0), connection: `koneksi.php`
+
+### Tabel:
+- **admin** — akun admin (id, username, password, nama)
+- **pengguna** — user terdaftar (id, username, email, password, nama, jk, nohp, foto, tgldaftar)
+- **penyebab** — 10 kondisi (kode_penyebab: P1-P10, nama_penyebab)
+- **waris** — 2 jenis waris (kode_jwaris: W1-W2)
+- **solusi** — 3 solusi (kode_solusi: S1-S3)
+- **pembagian** — 61 baris pembagian (kodeaw_pembagian: AW1-AW23, ahliwaris_f, keterangan, pembilang, penyebut)
+- **basis_forward** — 71 rule forward chaining (kode_forward: R1-R61B, keterangan: IF-THEN, syarat_ahliwaris)
+- **certainty_factor** — 38 baris CF pakar (kode: P1-P10/W1-W2/S1-S3/AW1-AW23, mb, md, nilaicf)
+- **dalil** — 12 dalil (kode_dalil: D1-D12, nama, ayat, penjelasan)
+- **diagnosa** — riwayat diagnosa (id_user, id_fwd, kode_forwardterpilih, cfhsl, nama, alamat, besaran_harta, besaran_pembagian, hutang_waris, tg_penazah, hasil_pembagian, penyebab_terpilih, tanggal)
+
+## 10. FITUR HALAMAN USER
+
+| Halaman | URL | Keterangan |
+|---------|-----|------------|
+| Home | `/home` | Landing page — judul & emoji |
+| Dalil | `/dalil` | Kumpulan dalil Quran & KHI — bisa filter & search |
+| About | `/about` | Profil pakar Adv. Arisman Nur, SH — slider foto & karir |
+| Kontak | `/kontak` | Alamat, telepon, jam operasional & Google Maps |
+| Login | `/login` | Form login user |
+| Register | `/register` | Form registrasi user baru |
+| Diagnosa | `/diagnosa` | Form diagnosa utama — WAJIB LOGIN |
+| Riwayat | `/riwayat` | History diagnosa user — kartu dengan detail |
+| Logout | `/logout` | Keluar dari sesi (pakai CSRF token) |
+
+## 11. FITUR HALAMAN ADMIN
+Akses: `/admin/` — tampilan glassmorphism dengan sidebar navigasi.
+
+| Halaman | Fungsi |
+|---------|--------|
+| Dashboard | Ringkasan jumlah data (penyebab, waris, solusi, rule, CF, user) |
+| Penyebab | Kelola 10 penyebab — tampil kartu, edit, hapus |
+| Waris | Kelola 2 jenis waris — tampil kartu, edit, hapus |
+| Solusi | Kelola 3 solusi — tampil kartu, edit, hapus |
+| Pembagian | Kelola 61 baris pembagian — dikelompokkan per AW code, edit, hapus |
+| Rule | Kelola 71 rule forward chaining — format IF-THEN naratif |
+| Nilai CF | Kelola 38 CF parameter — tab per tipe, progress bar |
+| Dalil | Kelola 12 dalil — tampil ayat & penjelasan |
+| Diagnosa | Lihat semua diagnosa user — surat keterangan & hapus |
+| Pengguna | Kelola user — tabel dengan foto, edit, hapus |
+
+## 12. KEAMANAN APLIKASI
+
+- **Session Auth**: session_start(), session_regenerate_id(true) saat login, password TIDAK disimpan di session
+- **CSRF Protection**: token per form via random_bytes(32), validasi hash_equals(), token di URL untuk logout
+- **Prepared Statements**: semua query pakai mysqli prepare/bind/execute — bebas SQL injection
+- **Rate Limit Login**: max 5 percobaan gagal per 60 detik per IP, file-based di `.ratelimit/`
+- **IDOR Protection**: user hanya bisa lihat diagnosa milik sendiri (validasi id_user di query)
+- **Upload Foto**: validasi ekstensi (jpg/png/gif), verifikasi MIME asli via finfo(), max 5MB, nama file unik
+- **Path Traversal**: whitelist routing — semua halaman yang diakses via `?p=` harus ada di whitelist
+
+## 13. FAQ — PERTANYAAN UMUM
+
+**Q: Bagaimana cara memulai diagnosa?**
+A: Login/Register dulu, lalu klik menu Diagnosa. Isi data pewaris & harta, pilih kondisi penyebab (centang yang sesuai + atur keyakinan), isi jumlah ahli waris, klik PROSES DIAGNOSA. Hasil berupa Surat Keterangan resmi yang bisa dicetak.
+
+**Q: Apa itu CF dan bagaimana cara mengisinya?**
+A: CF = Certainty Factor (tingkat keyakinan), range 0-1. Digunakan untuk menyatakan seberapa yakin user terhadap suatu kondisi. Slider di form diagnosa menawarkan 6 level: 0% (Tidak), 20%, 40%, 60%, 80%, 100% (Sangat Yakin). Default = 100% jika tidak digeser. CF user ini akan dikalikan dengan CF pakar.
+
+**Q: Apa perbedaan S1, S2, dan S3?**
+A: 
+- **S1** = Pusaka Tinggi tidak bisa dibagi/digadai — harta tetap milik kaum
+- **S2** = Pusaka Tinggi bisa digadai (bukan dijual) jika 4 kondisi darurat terpenuhi & disetujui seluruh kaum + MKW
+- **S3** = Pusaka Rendah bisa dibagi sesuai Faraid Islam — sistem merinci bagian tiap ahli waris
+
+**Q: Kenapa hasil saya S1 atau S2, bukan S3?**
+A: Karena kondisi yang dipilih mengarah ke Pusaka Tinggi (harta pusaka kaum), bukan Pusaka Rendah (harta pencarian). Pusaka Tinggi memang tidak dibagi perorangan. Cek lagi kondisi P1 vs P2 yang dipilih.
+
+**Q: Berapa minimal penyebab yang harus dipilih?**
+A: Minimal 1 penyebab. Tapi untuk hasil akurat, pilih semua kondisi yang relevan dengan harta Anda.
+
+**Q: Bagaimana cara membaca hasil pembagian (S3)?**
+A: Hasil ditampilkan sebagai Surat Keterangan dengan format per baris: "Nama_Ahli_Waris (pembilang/penyebut) [N orang]: Total Rp X | Per orang: Rp X". Fixed fraction untuk ahli waris utama (suami/istri/anak/orang tua), lalu sisa (ashabah) dibagi ke ahli waris laki-laki dengan rasio 2:1.
+
+**Q: Apakah wasiat mempengaruhi pembagian?**
+A: Wasiat (maks 1/3 harta) akan dikurangi dari total sebelum dibagi. Namun wasiat tidak boleh diberikan kepada ahli waris yang sudah dapat bagian fixed.
+
+**Q: Siapa saja ahli waris yang bisa diinput?**
+A: 23 jenis: Suami, Istri, Anak Lk, Anak Pr, Bapak, Ibu, Cucu Lk, Cucu Pr, Saudara Seibu, Saudara Sekandung Lk/Pr, Saudara Sebapak Lk/Pr, dan kerabat jauh (Paman, Anak Paman, Kakek, Nenek dari Ayah/Ibu, dll).
+
+**Q: Bagaimana cara melihat riwayat diagnosa?**
+A: Klik nama user di topbar → akses halaman Riwayat. Semua diagnosa tersimpan dengan kartu berisi: tanggal, nama pewaris, harta, CF, dan preview pembagian. Bisa klik "Lihat Detail" untuk cetak ulang.
+
+**Q: Data saya aman tidak?**
+A: Ya. Aplikasi menggunakan prepared statement untuk cegah SQL injection, CSRF token untuk cegah serangan form, rate limiting untuk cegah brute force, dan validasi IDOR sehingga user hanya bisa lihat data sendiri.
+
+**Q: Siapa pakar di balik sistem ini?**
+A: Adv. Arisman Nur, SH — seorang advokat dan ahli hukum adat Minangkabau serta hukum kewarisan Islam. Bisa dihubungi di 081363545301, alamat Jl. Kampung Baru No. 55 Padang, jam operasional 09:00-17:00 WIB.
+
+**Q: Siapa developer aplikasi ini?**
+A: Muhammad Fikri Khrisna. Email: kikikhrisna@gmail.com.
+
+
+## siapa pakar itu?
+- **Sekretaris DPC Peradi Padang, Sumbar 2 Periode (2012-2017, 2017-2022)
+- **DPD LPM Kota Padang Bidang Advokasi, Hukum & Perundang-undangan (2020-Sekarang)</td>
+- **KORMI Prov. Sumatera Barat Bidang Advokasi, Hukum & Perundang-undangan (2023-Sekarang)</td>
+- **LKAAM Kecamatan Padang Barat Bagian Sako Pusako (2025-2030)</td>
+- **BADUPARI Kota Padang Wakil Sekretaris (2025-2030)</td>
+
+## 14. PANDUAN RESPON CHATBOT
+
+ Saat menjawab pertanyaan user:
+ 1. Gunakan bahasa Indonesia santai, ramah, dan ringkas
+ 2. Jawab maksimal 3-4 paragraf, padat dan jelas
+ 3. Gunakan **bold** untuk poin penting
+ 4. Jika user bertanya tentang teknis (CF, rule, kode), jelaskan dengan contoh praktis
+ 5. Jika user bertanya tentang hukum, tekankan untuk konsultasi langsung dengan pakar
+ 6. SELALU arahkan ke halaman yang relevan di akhir jawaban
+ 7. Ingatkan user harus login dulu sebelum diagnosa
+
+ ## 15. PEMetaan TOPIK KE HALAMAN
+
+ ARAHKAN user ke halaman yang tepat berdasarkan topik pertanyaan mereka:
+
+ ### 🚀 HALAMAN UTAMA
+ | Topik | Arahkan ke |
+ |------------|------------|
+ | Cara mulai diagnosa | `/diagnosa` |
+ | Login ke aplikasi | `/login` |
+ | Buat akun baru | `/register` |
+ | Tentang aplikasi | `/about` |
+ | Hubungi developer/pakar | `/kontak` |
+
+ ### 📖 HALAMAN PENGETAHUAN
+ | Topik Pertanyaan | Arahkan ke |
+ |------------------|------------|
+| Apa itu Pusako Randah/Tinggi | `/about` |
+| Perbedaan Pusako Randah vs Tinggi | `/about` |
+| Definisi/penjelasan harta pusako | `/about` |
+| Siapa pakar di balik aplikasi | `/about` |
+| Penjelasan ahli waris | `/dalil` |
+| Dalil Al-Quran tentang waris | `/dalil` |
+| Ayat waris di Al-Quran | `/dalil` |
+| KHI hukum waris | `/dalil` |
+| Pasal-pasal KHI tentang waris | `/dalil` |
+
+ ### 🧠 HALAMAN DIAGNOSA
+ | Topik Pertanyaan | Arahkan ke |
+ |------------------|------------|
+| Cara menghitung waris | `/diagnosa` |
+| Bagaimana cara diagnosa | `/diagnosa` |
+| Cara pakai aplikasi ini | `/diagnosa` |
+| Hitung pembagian harta | `/diagnosa` |
+| S1, S2, S3 penjelasan | `/diagnosa` |
+| Hasil bagi waris | `/diagnosa` |
+| CF itu apa / cara isi CF | `/diagnosa` |
+| Slider keyakinan | `/diagnosa` |
+| Forward chaining | `/diagnosa` |
+| Rumus pembagian waris | `/diagnosa` |
+| Bagian ahli waris | `/diagnosa` |
+
+ ### 📋 HALAMAN RIWAYAT
+ | Topik Pertanyaan | Arahkan ke |
+ |------------------|------------|
+| Lihat hasil diagnosa sebelumnya | `/riwayat` |
+| Cetak surat keterangan | `/riwayat` |
+| History perhitungan | `/riwayat` |
+
+ ### 💡 ATURAN PENTING
+ - Jika user BELUM login dan bertanya tentang diagnosa:
+   "Silakan login dulu ya! → /login"
+ - Jika user menanyakan topik yang kompleks:
+   "Untuk penjelasan lengkap, bisa lihat di → /dalil (untuk dalil) atau /about (untuk info aplikasi)"
+ - Jika user bingung mulai dari mana:
+   "Mulai di sini → /diagnosa"
+ - Link selalu taruh di akhir jawaban dalam format: "→ /halaman"
+
+ ## 16. CONTOH RESPON DENGAN LINK
+
+ **User:** "bagaimana cara menghitung waris?"
+ **Bot:** "Gampang! Kamu cukup isi form di halaman Diagnosa dengan data pewaris dan harta, pilih kondisi yang sesuai, dan sistem akan hitung otomatis dengan metode Certainty Factor dan Forward Chaining. [→ /diagnosa](https://sipakarminang.my.id/diagnosa)"
+
+ **User:** "siapa pakar dibalik aplikasi ini?"
+ **Bot:** "Pakarnya adalah **Adv. Arisman Nur, SH** — ahli hukum adat Minangkabau dan hukum kewarisan Islam. Beliau juga aktif di organisasi lawyer dan KADIN. Lebih lengkap bisa dilihat di halaman About. [→ /about](https://sipakarminang.my.id/about)"
+
+ **User:** "aku belum punya akun"
+ **Bot:** "Gampang banget! Klik tombol Register di atas atau langsung ke halaman ini untuk buat akun baru. Prosesnya cepat, tinggal isi username, email, dan password. [→ /register](https://sipakarminang.my.id/register)"
+
+
+## 17. DAFTAR SUKU MINANGKABAU (untuk pengenalan chatbot)
+
+Daftar nama suku yang dikenal di sistem
+
+### Sistem Kekerabatan Minangkabau: MATRILINEAL (garis ibu)
+- **Suku diturunkan dari IBU**, bukan dari ayah (BUKAN patrilineal)
+- Mamak Kepala Waris (MKW) = saudara laki-laki IBU (mamak), BUKAN ayah kandung
+- Ayah kandung disebut "sumando" (menantu) di suku ibu
+- Pusako Tinggi (harta kaum) diwariskan melalui garis ibu
+- Rumah Gadang dan tanah ulayat milik kaum (garis ibu)
+- Satu anak bisa berbeda suku dengan ayahnya (mengikuti suku ibu)
+
+1. Koto
+2. Piliang
+3. Bodi
+4. Caniago
+5. Tanjung
+6. Sikumbang
+7. Melayu
+8. Guci
+9. Panai
+10. Jambak
+11. Kutianyia
+12. Kampai
+13. Bendang
+14. Mandailiang
+15. Mandaliko
+16. Salo
+17. Singkuang
+18. Sipisang
+19. Dalimo
+20. Domo
+21. Pisang
+22. Pitopang
+23. Banuhampu
+24. Sumagek
+25. Simabua
+26. Supanjang
+27. Selayan
+28. Anduring
+29. Sumpadang
+30. Patapang

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mina AI - Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="cb-container">
+    <div class="cb-header">
+        <div class="cb-avatar"><img src="/foto/mina.svg" alt="Mina" class="cb-avatar-img"></div>
+        <div class="cb-info">
+            <div class="cb-title">Mina AI</div>
+            <div class="cb-status"><span class="cb-dot"></span> Online</div>
+        </div>
+        <button class="cb-clear" onclick="clearChat()" title="Hapus chat">🗑️</button>
+    </div>
+
+    <div class="cb-messages" id="cb-messages"></div>
+
+    <div class="cb-quick" id="cb-quick"></div>
+
+    <div class="cb-input-area">
+        <input type="text" class="cb-input" id="cb-input" placeholder="Tanya tentang waris..." autocomplete="off">
+        <button class="cb-send" id="cb-send">➤</button>
+    </div>
+
+    <div class="cb-footer">
+        <a href="https://sipakarminang.my.id/">⚖️ Sipakar Minang</a> — Sistem Pakar Waris Pusako Minangkabau
+    </div>
+</div>
+
+<script src="/script.js"></script>
+</body>
+</html>
