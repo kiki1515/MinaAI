@@ -8,7 +8,7 @@ Asisten virtual untuk **Sipakar Minang** (Sistem Pakar Waris Pusako Minangkabau)
 
 > **Muhammad Fikri Khrisna**  
 > *PERANCANGAN SISTEM CERDAS DENGAN PENDEKATAN FORWARD CHAINING DAN CERTAINTY FACTOR UNTUK PEMBAGIAN HARTA WARIS MENURUT HUKUM ADAT MINANGKABAU*  
-> Universitas Putra Indonesia YPTK Padang — Oktober 2028
+> Universitas Putra Indonesia YPTK Padang — Oktober 2026
 
 ## Fitur
 
